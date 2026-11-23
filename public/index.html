@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FairPay | Smart Salary Prediction System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.85);
+      --bg-card-border: rgba(255, 255, 255, 0.08);
+      --input-bg: #1e293b;
+      --input-border: #334155;
+      --input-focus: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-sub: #cbd5e1;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --accent: #10b981;
+      --error-bg: rgba(239, 68, 68, 0.15);
+      --error-border: #ef4444;
+      --error-text: #fca5a5;
+      --badge-bg: rgba(59, 130, 246, 0.15);
+      --badge-border: rgba(59, 130, 246, 0.3);
+      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.95);
+      --bg-card-border: rgba(0, 0, 0, 0.08);
+      --input-bg: #f8fafc;
+      --input-border: #cbd5e1;
+      --input-focus: #2563eb;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-sub: #334155;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-glow: rgba(37, 99, 235, 0.25);
+      --accent: #059669;
+      --error-bg: #fef2f2;
+      --error-border: #f87171;
+      --error-text: #b91c1c;
+      --badge-bg: #eff6ff;
+      --badge-border: #bfdbfe;
+      --shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background gradient bubbles */
+    .ambient-bg {
+      position: fixed;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 120%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+      background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.25) 0%, transparent 40%),
+                  radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.2) 0%, transparent 40%);
+    }
+
+    /* Theme Toggle */
+    .top-bar {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .theme-toggle:hover {
+      border-color: var(--primary);
+    }
+
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 580px;
+      z-index: 1;
+      margin: auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, var(--text) 30%, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .label-hint {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      border-radius: 12px;
+      background-color: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    /* Quick suggestions pills */
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tag-btn {
+      background: transparent;
+      border: 1px solid var(--input-border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .tag-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--badge-bg);
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px var(--primary-glow);
+      margin-top: 24px;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px var(--primary-glow);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error Message Box */
+    .error-box {
+      display: none;
+      margin-top: 18px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background-color: var(--error-bg);
+      border: 1px solid var(--error-border);
+      color: var(--error-text);
+      font-size: 0.88rem;
+      font-weight: 500;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Result Card */
+    .result-card {
+      display: none;
+      margin-top: 24px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.08));
+      border: 1.5px solid rgba(16, 185, 129, 0.35);
+      border-radius: 16px;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-title {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .result-amount {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .result-monthly {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .result-meta {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--bg-card-border);
+    }
+
+    .meta-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .meta-chip strong {
+      color: var(--text);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 24px 18px;
+      }
+      .title {
+        font-size: 1.7rem;
+      }
+      .result-amount {
+        font-size: 1.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-bg"></div>
+
+  <div class="top-bar">
+    <button class="theme-toggle" id="theme-btn" aria-label="Toggle Theme">
+      <span id="theme-icon">☀️</span> <span id="theme-text">Light Mode</span>
+    </button>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <div class="badge-pill">
+        <span>✨ ML Powered Estimator</span>
+      </div>
+      <h1 class="title">Salary Predictor</h1>
+      <p class="subtitle">Estimate fair market compensation based on qualification, years of experience, and job role.</p>
+    </div>
+
+    <div class="card">
+      <form id="prediction-form" novalidate>
+        <!-- Education Level Dropdown -->
+        <div class="form-group">
+          <label for="education">Education Level <span class="label-hint">(Highest degree achieved)</span></label>
+          <select id="education" required>
+            <option value="" disabled selected>Select qualification...</option>
+            <option value="High School">High School</option>
+            <option value="Bachelor's">Bachelor's Degree</option>
+            <option value="Master's">Master's Degree</option>
+            <option value="PhD">PhD / Doctorate</option>
+          </select>
+        </div>
+
+        <!-- Years of Experience Input -->
+        <div class="form-group">
+          <label for="experience">Years of Professional Experience <span class="label-hint">(0 to 50)</span></label>
+          <input 
+            type="number" 
+            id="experience" 
+            name="experience" 
+            min="0" 
+            max="60" 
+            step="0.5" 
+            placeholder="e.g. 4.5" 
+            required
+          >
+        </div>
+
+        <!-- Job Title Datalist Input -->
+        <div class="form-group">
+          <label for="job-title">Job Title / Role <span class="label-hint">(Search or type your role)</span></label>
+          <input 
+            type="text" 
+            id="job-title" 
+            name="job-title" 
+            list="job-titles-list" 
+            placeholder="e.g. Software Engineer" 
+            autocomplete="off" 
+            required
+          >
+          <datalist id="job-titles-list">
+            <option value="Software Engineer"></option>
+            <option value="Senior Software Engineer"></option>
+            <option value="Data Scientist"></option>
+            <option value="Data Analyst"></option>
+            <option value="Product Manager"></option>
+            <option value="Senior Manager"></option>
+            <option value="Director"></option>
+            <option value="Project Manager"></option>
+            <option value="Business Analyst"></option>
+            <option value="UX Designer"></option>
+            <option value="Financial Analyst"></option>
+          </datalist>
+
+          <!-- Quick Presets -->
+          <div class="quick-tags">
+            <span style="font-size: 0.72rem; color: var(--text-muted); align-self: center;">Popular:</span>
+            <button type="button" class="tag-btn" onclick="applyPreset('Software Engineer', 3, 'Bachelor\'s')">Software Eng (3y)</button>
+            <button type="button" class="tag-btn" onclick="applyPreset('Data Scientist', 5, 'Master\'s')">Data Scientist (5y)</button>
+            <button type="button" class="tag-btn" onclick="applyPreset('Product Manager', 8, 'Master\'s')">Product Mgr (8y)</button>
+            <button type="button" class="tag-btn" onclick="applyPreset('Director', 15, 'Master\'s')">Director (15y)</button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" id="submit-btn">
+          <span class="spinner" id="spinner"></span>
+          <span id="btn-text">Predict Expected Salary</span>
+        </button>
+      </form>
+
+      <!-- Error Alert -->
+      <div class="error-box" id="error-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span id="error-text">Please enter valid values.</span>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-card" id="result-card">
+        <div class="result-title">Estimated Annual Compensation</div>
+        <div class="result-amount" id="result-amount">$0</div>
+        <div class="result-monthly" id="result-monthly">~$0 / month</div>
+        <div class="result-meta">
+          <span class="meta-chip">Role: <strong id="meta-role">-</strong></span>
+          <span class="meta-chip">Exp: <strong id="meta-exp">-</strong></span>
+          <span class="meta-chip">Degree: <strong id="meta-edu">-</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built with scikit-learn & Flask &bull; Implements debiased regression models</p>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle handling
+    const themeBtn = document.getElementById('theme-btn');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 
+      (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    setTheme(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      setTheme(isLight ? 'dark' : 'light');
+    });
+
+    // Populate options from API
+    async function loadOptions() {
+      try {
+        const resp = await fetch('/api/options');
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.education_levels && data.education_levels.length > 0) {
+            const eduSelect = document.getElementById('education');
+            const currentVal = eduSelect.value;
+            eduSelect.innerHTML = '<option value="" disabled selected>Select qualification...</option>';
+            data.education_levels.forEach(lvl => {
+              const opt = document.createElement('option');
+              opt.value = lvl;
+              opt.textContent = lvl === "Bachelor's" ? "Bachelor's Degree" :
+                                lvl === "Master's" ? "Master's Degree" :
+                                lvl === "PhD" ? "PhD / Doctorate" : lvl;
+              eduSelect.appendChild(opt);
+            });
+            if (currentVal) eduSelect.value = currentVal;
+          }
+
+          if (data.job_titles && data.job_titles.length > 0) {
+            const datalist = document.getElementById('job-titles-list');
+            datalist.innerHTML = '';
+            data.job_titles.forEach(title => {
+              const opt = document.createElement('option');
+              opt.value = title;
+              datalist.appendChild(opt);
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Could not refresh options from /api/options, using bundled defaults.', e);
+      }
+    }
+
+    loadOptions();
+
+    // Preset shortcut helper
+    window.applyPreset = function(role, exp, edu) {
+      document.getElementById('job-title').value = role;
+      document.getElementById('experience').value = exp;
+      document.getElementById('education').value = edu;
+      clearError();
+    };
+
+    // Form elements
+    const form = document.getElementById('prediction-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btn-text');
+    const errorBox = document.getElementById('error-box');
+    const errorText = document.getElementById('error-text');
+    const resultCard = document.getElementById('result-card');
+    const resultAmount = document.getElementById('result-amount');
+    const resultMonthly = document.getElementById('result-monthly');
+    const metaRole = document.getElementById('meta-role');
+    const metaExp = document.getElementById('meta-exp');
+    const metaEdu = document.getElementById('meta-edu');
+
+    function showError(msg) {
+      errorText.textContent = msg;
+      errorBox.style.display = 'flex';
+      resultCard.style.display = 'none';
+    }
+
+    function clearError() {
+      errorBox.style.display = 'none';
+    }
+
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      if (isLoading) {
+        spinner.style.display = 'inline-block';
+        btnText.textContent = 'Estimating Fair Salary...';
+      } else {
+        spinner.style.display = 'none';
+        btnText.textContent = 'Predict Expected Salary';
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const education = document.getElementById('education').value.trim();
+      const experienceRaw = document.getElementById('experience').value.trim();
+      const jobTitle = document.getElementById('job-title').value.trim();
+
+      // Client-side validation
+      if (!education) {
+        showError('Please select an Education Level.');
+        return;
+      }
+
+      if (experienceRaw === '') {
+        showError('Please enter your Years of Professional Experience.');
+        return;
+      }
+
+      const experience = parseFloat(experienceRaw);
+      if (isNaN(experience) || experience < 0) {
+        showError('Years of Experience must be a positive number (0 or greater).');
+        return;
+      }
+
+      if (experience > 60) {
+        showError('Years of Experience cannot exceed 60 years.');
+        return;
+      }
+
+      if (!jobTitle) {
+        showError('Please enter or select a Job Title.');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const response = await fetch('/api/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            education: education,
+            experience: experience,
+            job_title: jobTitle
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          showError(data.error || 'Server returned an error. Please check your inputs.');
+          setLoading(false);
+          return;
+        }
+
+        const salary = data.predicted_salary;
+        const formattedAnnual = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(salary);
+
+        const monthlySalary = salary / 12;
+        const formattedMonthly = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(monthlySalary);
+
+        resultAmount.textContent = formattedAnnual;
+        resultMonthly.textContent = `~${formattedMonthly} / month`;
+        metaRole.textContent = jobTitle;
+        metaExp.textContent = `${experience} yrs`;
+        metaEdu.textContent = education;
+
+        resultCard.style.display = 'block';
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      } catch (err) {
+        showError('Network error or server unreachable. Ensure the backend is running.');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

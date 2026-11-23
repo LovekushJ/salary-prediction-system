@@ -1,0 +1,32 @@
+{
+  "education_levels": [
+    "Bachelor's",
+    "High School",
+    "Master's",
+    "PhD"
+  ],
+  "job_titles": [
+    "Business Analyst",
+    "Content Strategist",
+    "Data Analyst",
+    "Data Scientist",
+    "DevOps Engineer",
+    "Director",
+    "Financial Analyst",
+    "HR Manager",
+    "Helpdesk Technician",
+    "Marketing Analyst",
+    "Marketing Coordinator",
+    "Niche Specialist",
+    "Operations Manager",
+    "Product Manager",
+    "Project Manager",
+    "Research Scientist",
+    "Sales Associate",
+    "Sales Manager",
+    "Senior Manager",
+    "Senior Software Engineer",
+    "Software Engineer",
+    "UX Designer"
+  ]
+}
